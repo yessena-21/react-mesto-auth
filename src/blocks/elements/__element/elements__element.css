@@ -1,0 +1,14 @@
+.elements__element {
+     position: relative;
+     background-color: white;
+     border-radius: 10px;
+     max-width: 282px;
+     display: flex;
+     flex-direction: column;
+}
+
+
+.elements__element:hover {
+     cursor: pointer;
+}
+
