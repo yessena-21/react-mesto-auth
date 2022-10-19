@@ -10,14 +10,14 @@ function InfoTooltip({ isResponseFail, isOpen, onClose }) {
   return (
     <div className={`popup ${isOpen ? 'popup_opened' : ''}`}>
       <div className="popup__container">
-      <button className="popup__exit-button" type="button" onClick={onClose} />
+        <button className="popup__exit-button" type="button" onClick={onClose} />
         <img
           className="popup__result-img"
           src={srcImg}
           alt="Результат запроса"
         />
         <p className="popup__title">{title}</p>
-        
+
       </div>
     </div>
   );

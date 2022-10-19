@@ -9,7 +9,7 @@ import EditAvatarPopup from './EditAvatarPopup';
 import DeleteConfirmPopup from './DeleteConfirmPopup';
 import ImagePopup from './ImagePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import api from "../utils/api";
 import auth from "../utils/auth";
 import ProtectedRoute from './ProtectedRoute';
@@ -35,13 +35,10 @@ function App() {
   const [email, setEmail] = useState(null);
 
   const authorization = (jwt) => {
-    return auth.checkToken(jwt).then(({ res }) => {
+    return auth.checkToken(jwt).then((res) => {
       if (res) {
-        const { email } = res;
-       // console.log(res);
         setLoggedIn(true);
-        setEmail({ email }
-        )
+        setEmail(res.data.email)
       }
     }).catch((err) => showInfoTooltip(true, err));
   }
@@ -66,30 +63,27 @@ function App() {
     setLoggedIn(false);
   }
 
-  function onRegister({ email, password }) {
-    auth.registration({ email, password }).then((res) => {
-      if (res.data) {
-        showInfoTooltip(false);
-        history.push('/signin');
-      }
+  const onRegister = useCallback(({ email, password }) => {
+    return auth.registration({ email, password }).then((res) => {
+      if (!res || res.StatusCode === 400) throw new Error(' Что-то пошло не так')
+      return res;
     })
-      .catch((err) => showInfoTooltip(true, err));
-  }
+  },[])
 
   const onLogin = ({ email, password }) => {
 
-    auth.authorization({ email, password }).then(({ token }) => {
-      if (token) {
-        localStorage.setItem('jwt', token);
+   return auth.authorization({ email, password }).then((res) => {
+      if (!res || res.StatusCode === 400) throw new Error(' Что-то пошло не так')
+      if (res.token) {
+        localStorage.setItem('jwt', res.token);
         setLoggedIn(true);
         setEmail(email);
-        history.push('/');
       }
+
     })
-      .catch((err) => showInfoTooltip(true, err));
   }
 
-  function showInfoTooltip(isError, err = null) {
+  const showInfoTooltip = (isError, err = null) => {
     if (err) console.log(err);
     setIsResponseFail(isError);
     setIsInfoTooltipOpen(true);
@@ -224,12 +218,12 @@ function App() {
         <Switch>
           <Route path="/signin">
             <div className="loginContainer">
-              <Login onLogin={onLogin} />
+              <Login onLogin={onLogin} showInfoTooltip={showInfoTooltip} />
             </div>
           </Route>
           <Route path="/signup">
             <div className="registerContainer">
-              <Register onRegister={onRegister} />
+              <Register onRegister={onRegister} showInfoTooltip={showInfoTooltip} />
             </div>
           </Route>
           <ProtectedRoute

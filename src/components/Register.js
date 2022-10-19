@@ -1,16 +1,27 @@
-import { Link} from 'react-router-dom';
-import React, {useState} from "react";
+import { Link, useHistory } from 'react-router-dom';
+import React, { useCallback, useState, } from "react";
 
-function Register({ onRegister }) {
+function Register({ onRegister, showInfoTooltip }) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
+
+
+  const resetForm = useCallback(() => {
+    setEmail('')
+    setPassword('')
+  }, [])
 
   const handleSubmit = (e) => {
 
     e.preventDefault();
-    onRegister({ email, password });
-  };
+    onRegister({ email, password })
+      .then(resetForm)
+      .then(() => showInfoTooltip(false))
+      .then(() => history.push('/signin'))
+      .catch((err) => showInfoTooltip(true, err))
+  }
 
   return (
     <form className="register-form" name="registerForm" onSubmit={handleSubmit} type="submit">
@@ -45,10 +56,10 @@ function Register({ onRegister }) {
       </button>
 
       <Link to="/signin" className="register-form__link">
-             Уже зарегистрированы? Войти
+        Уже зарегистрированы? Войти
       </Link>
     </form>
-       
+
   );
 }
 

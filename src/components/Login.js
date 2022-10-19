@@ -1,15 +1,25 @@
+import { useHistory } from 'react-router-dom';
+import React, { useState, useCallback } from "react";
 
-import React, { useState } from "react";
-
-function Login({ onLogin }) {
+function Login({ onLogin, showInfoTooltip }) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
+
+  const resetForm = useCallback(() => {
+    setEmail('')
+    setPassword('')
+  }, [])
 
   const handleSubmit = (e) => {
 
     e.preventDefault();
-    onLogin({ email, password });
+    onLogin({ email, password })
+      .then(resetForm)
+      .then(() => history.push('/'))
+      .catch((err) => showInfoTooltip(true, err));
+
   };
 
   return (
