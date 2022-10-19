@@ -47,7 +47,7 @@ function EditProfile({ isOpen, onClose, onUpdateUser, isLoading }) {
                     required
                     minLength="2"
                     maxLength="40"
-                    value={name  ?? ''}
+                    value={name  || ''}
                     onChange={handleChangeName}
                 />
                 <span className="form__input-error form__input-name-error"></span>
@@ -60,7 +60,7 @@ function EditProfile({ isOpen, onClose, onUpdateUser, isLoading }) {
                     required
                     minLength="2"
                     maxLength="200"
-                    value={description ?? ''}
+                    value={description || ''}
                     onChange={handleChangeDescription}
                 />
                 <span className="form__input-error form__input-description-error"></span>
