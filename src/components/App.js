@@ -38,6 +38,7 @@ function App() {
     return auth.checkToken(jwt).then(({ res }) => {
       if (res) {
         const { email } = res;
+       // console.log(res);
         setLoggedIn(true);
         setEmail({ email }
         )
@@ -47,6 +48,7 @@ function App() {
 
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
+
     if (jwt) {
       authorization(jwt);
     }
@@ -66,11 +68,11 @@ function App() {
 
   function onRegister({ email, password }) {
     auth.registration({ email, password }).then((res) => {
-        if (res.data) {
-          showInfoTooltip(false);
-          history.push('/signin');
-        }
-      })
+      if (res.data) {
+        showInfoTooltip(false);
+        history.push('/signin');
+      }
+    })
       .catch((err) => showInfoTooltip(true, err));
   }
 
@@ -86,7 +88,7 @@ function App() {
     })
       .catch((err) => showInfoTooltip(true, err));
   }
- 
+
   function showInfoTooltip(isError, err = null) {
     if (err) console.log(err);
     setIsResponseFail(isError);
@@ -220,7 +222,7 @@ function App() {
           onSignOut={handleSignOut}
         />
         <Switch>
-          <Route exact path="/signin">
+          <Route path="/signin">
             <div className="loginContainer">
               <Login onLogin={onLogin} />
             </div>
@@ -291,9 +293,6 @@ function App() {
           isResponseFail={isResponseFail}
           onClose={closeAllPopups}
         />
-
-
-
       </div>
     </CurrentUserContext.Provider>
   );
