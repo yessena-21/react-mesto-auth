@@ -34,7 +34,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState(null);
 
-  const auth_ = (jwt) => {
+  const authorization = (jwt) => {
     return auth.checkToken(jwt).then(({ res }) => {
       if (res) {
         const { email } = res;
@@ -48,7 +48,7 @@ function App() {
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      auth_(jwt);
+      authorization(jwt);
     }
   }, []);
 
