@@ -1,23 +1,18 @@
+
 import { Link, useHistory } from 'react-router-dom';
-import React, { useCallback, useState, } from "react";
+import React from "react";
+import useForm  from '../hooks/useForm';
 
 function Register({ onRegister, showInfoTooltip }) {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const history = useHistory();
-
-
-  const resetForm = useCallback(() => {
-    setEmail('')
-    setPassword('')
-  }, [])
+  const { values, handleChange, setValues } = useForm({});
+ const history = useHistory();
 
   const handleSubmit = (e) => {
 
     e.preventDefault();
-    onRegister({ email, password })
-      .then(resetForm)
+    onRegister(values)
+      .then(setValues({}))
       .then(() => showInfoTooltip(false))
       .then(() => history.push('/signin'))
       .catch((err) => showInfoTooltip(true, err))
@@ -28,11 +23,11 @@ function Register({ onRegister, showInfoTooltip }) {
       <h2 className="register-form__title">Регистрация</h2>
       <section className="register-form__section">
         <input
-          onChange={({ target: { value } }) => setEmail(value)}
+          onChange={handleChange}
           type="email"
           name="email"
           className="register-form__input"
-          value={email}
+          value={values.email || ''}
           placeholder="Email"
           required
           aria-label="Поле для ввода почты"
@@ -40,11 +35,11 @@ function Register({ onRegister, showInfoTooltip }) {
       </section>
       <section className="register-form__section">
         <input
-          onChange={({ target: { value } }) => setPassword(value)}
+          onChange={handleChange}
           type="password"
           name="password"
           className="register-form__input"
-          value={password}
+          value={values.password || ''}
           placeholder="Пароль"
           required
           minLength="5"

@@ -1,22 +1,17 @@
 import { useHistory } from 'react-router-dom';
-import React, { useState, useCallback } from "react";
+import React from "react";
+import useForm from '../hooks/useForm';
 
 function Login({ onLogin, showInfoTooltip }) {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { values, handleChange, setValues } = useForm({});
   const history = useHistory();
-
-  const resetForm = useCallback(() => {
-    setEmail('')
-    setPassword('')
-  }, [])
 
   const handleSubmit = (e) => {
 
     e.preventDefault();
-    onLogin({ email, password })
-      .then(resetForm)
+    onLogin(values)
+      .then(setValues({}))
       .then(() => history.push('/'))
       .catch((err) => showInfoTooltip(true, err));
 
@@ -27,11 +22,11 @@ function Login({ onLogin, showInfoTooltip }) {
       <h2 className="login-form__title">Вход</h2>
       <section className="login-form__section">
         <input
-          onChange={({ target: { value } }) => setEmail(value)}
+          onChange={handleChange}
           type="email"
           name="email"
           className="login-form__input"
-          value={email || ''}
+          value={values.email || ''}
           placeholder="Email"
           required
           aria-label="Поле для ввода почты"
@@ -39,11 +34,11 @@ function Login({ onLogin, showInfoTooltip }) {
       </section>
       <section className="login-form__section">
         <input
-          onChange={({ target: { value } }) => setPassword(value)}
+          onChange={handleChange}
           type="password"
           name="password"
           className="login-form__input"
-          value={password || ''}
+          value={values.password || ''}
           placeholder="Пароль"
           required
           minLength="5"

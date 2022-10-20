@@ -1,31 +1,25 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import useForm from '../hooks/useForm';
 
 function EditProfile({ isOpen, onClose, onUpdateUser, isLoading }) {
 
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
+    const { values, handleChange, setValues } = useForm({});
     const currentUser = React.useContext(CurrentUserContext);
 
-    function handleChangeName(e) {
-        setName(e.target.value);
-    }
-
-    function handleChangeDescription(e) {
-        setDescription(e.target.value);
-    }
     function handleSubmit(e) {
         e.preventDefault();
-        onUpdateUser({
-            name: name,
-            about: description,
-        });
+        onUpdateUser(values);
     }
     useEffect(() => {
-        setName(currentUser.name);
-        setDescription(currentUser.about);
+        setValues(
+            {
+                name: currentUser.name,
+                about: currentUser.about,
+            }
+        )
     }, [currentUser, isOpen]);
 
     return (
@@ -47,8 +41,8 @@ function EditProfile({ isOpen, onClose, onUpdateUser, isLoading }) {
                     required
                     minLength="2"
                     maxLength="40"
-                    value={name  || ''}
-                    onChange={handleChangeName}
+                    value={values.name || ''}
+                    onChange={handleChange}
                 />
                 <span className="form__input-error form__input-name-error"></span>
             </label><label className="popup__field">
@@ -60,8 +54,8 @@ function EditProfile({ isOpen, onClose, onUpdateUser, isLoading }) {
                     required
                     minLength="2"
                     maxLength="200"
-                    value={description || ''}
-                    onChange={handleChangeDescription}
+                    value={values.about || ''}
+                    onChange={handleChange}
                 />
                 <span className="form__input-error form__input-description-error"></span>
             </label>

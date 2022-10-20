@@ -1,33 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PopupWithForm from "./PopupWithForm";
+import useForm from '../hooks/useForm'
 
 function AddNewElement({ isOpen, onClose, onAddPlace, isLoading }) {
-  const [name, setName] = useState('');
-  const [link, setLink] = useState('');
 
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-
-  function handleChangeLink(e) {
-    setLink(e.target.value);
-  }
+  const { values, handleChange, setValues } = useForm({});
 
   function handleSubmit(e) {
-    // Запрещаем браузеру переходить по адресу формы
     e.preventDefault();
-
-    // Передаём значения управляемых компонентов во внешний обработчик
-    onAddPlace({
-      name,
-      link,
-    });
+    onAddPlace(values);
+    setValues({})
   }
 
-  React.useEffect(() => {
-    setName('');
-    setLink('');
-}, [isOpen]);
 
   return (
     <PopupWithForm
@@ -47,8 +31,8 @@ function AddNewElement({ isOpen, onClose, onAddPlace, isLoading }) {
           placeholder="Название"
           required minLength="2"
           maxLength="30"
-          value={name}
-          onChange={handleChangeName}
+          value={values.name || ''}
+          onChange={handleChange}
         />
         <span className="form__input-error form__input-title-error"></span>
       </label>
@@ -59,8 +43,8 @@ function AddNewElement({ isOpen, onClose, onAddPlace, isLoading }) {
           type="url"
           name="link"
           placeholder="Ссылка на картинку"
-          value={link}
-          onChange={handleChangeLink} required
+          value={values.link || ''}
+          onChange={handleChange} required
         />
         <span className="form__input-error form__input-link-error"></span>
       </label>
