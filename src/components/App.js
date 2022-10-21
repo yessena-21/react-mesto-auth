@@ -65,13 +65,15 @@ function App() {
 
   const onRegister = useCallback(({ email, password }) => {
     return auth.registration({ email, password }).then((res) => {
+      if (!res || res.StatusCode === 400) throw new Error(' Что-то пошло не так')
       return res;
     })
-  },[])
+  }, [])
 
   const onLogin = ({ email, password }) => {
 
    return auth.authorization({ email, password }).then((res) => {
+      if (!res || res.StatusCode === 400) throw new Error(' Что-то пошло не так')
       if (res.token) {
         localStorage.setItem('jwt', res.token);
         setLoggedIn(true);
