@@ -34,14 +34,14 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState(null);
 
-  const authorization = (jwt) => {
+  const authorization = useCallback((jwt) => {
     return auth.checkToken(jwt).then((res) => {
       if (res) {
         setLoggedIn(true);
         setEmail(res.data.email)
       }
     }).catch((err) => showInfoTooltip(true, err));
-  }
+  }, [])
 
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
@@ -49,13 +49,13 @@ function App() {
     if (jwt) {
       authorization(jwt);
     }
-  }, []);
+  }, [authorization]);
 
   useEffect(() => {
     if (loggedIn) {
       history.push('/');
     }
-  }, [loggedIn]);
+  }, [loggedIn, history]);
 
   function handleSignOut() {
     localStorage.removeItem('jwt');

@@ -20,7 +20,7 @@ function EditProfile({ isOpen, onClose, onUpdateUser, isLoading }) {
                 about: currentUser.about,
             }
         )
-    }, [currentUser, isOpen]);
+    }, [currentUser, isOpen, setValues]);
 
     return (
         <PopupWithForm
