@@ -37,10 +37,12 @@ function App() {
   const authorization = useCallback((jwt) => {
     return auth.checkToken(jwt).then((res) => {
       if (res) {
+        handleCurrentUser();
+        getCards();
         setLoggedIn(true);
-        setEmail(res.data.email)
+        setEmail(res.email)
       }
-    }).catch((err) => showInfoTooltip(true, err));
+    }).catch((err) => { console.log('ошибка проверки токена', err);});
   }, [])
 
   useEffect(() => {
@@ -49,13 +51,13 @@ function App() {
     if (jwt) {
       authorization(jwt);
     }
-  }, [authorization]);
+  }, []);
 
   useEffect(() => {
     if (loggedIn) {
       history.push('/');
     }
-  }, [loggedIn, history]);
+  }, [loggedIn]);
 
   function handleSignOut() {
     localStorage.removeItem('jwt');
@@ -116,7 +118,8 @@ function App() {
 
   const handleCardLike = async (card) => {
     try {
-      const isLiked = card.likes.some(i => i._id === currentUser._id);
+      console.log();
+      const isLiked = card.likes.some(i => i === currentUser._id);
       const newCard = await api.changeLikeCardStatus(card._id, !isLiked);
       setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
     } catch (e) {
@@ -196,14 +199,14 @@ function App() {
     setDeletedCard({ id: '' });
   }
 
-  useEffect(() => {
-    handleCurrentUser();
-  }, []);
+  // useEffect(() => {
+  //   handleCurrentUser();
+  // }, []);
 
-  useEffect(() => {
-    getCards();
+  // useEffect(() => {
+  //   getCards();
 
-  }, []);
+  // }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>

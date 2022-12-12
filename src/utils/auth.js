@@ -19,18 +19,19 @@ class Auth {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      },
+        authorization:`Bearer ${localStorage.getItem('jwt')}`,
+    },
       body: JSON.stringify({ email, password }),
     })
   }
 
-  checkToken(token) {
+  checkToken(jwt) {
     return this._request(`${this.baseUrl}/users/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+        authorization:`Bearer ${jwt}`,
+    },
     })
   }
   _getResponseData(res) {
@@ -44,6 +45,6 @@ class Auth {
   }
 }
 
-const auth = new Auth('https://auth.nomoreparties.co');
+const auth = new Auth('https://api.yessena.students.nomoredomains.club');
 
 export default auth;
